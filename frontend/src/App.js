@@ -1,35 +1,36 @@
-import { BrowserRouter as Router, Routes, Route, Navigate } from 'react-router-dom';
-import { useState, useEffect } from 'react';
-import jwtDecode from 'jwt-decode';
-import Login from './pages/Login';
-import Challenges from './pages/Challenges';
-import Leaderboard from './pages/Leaderboard';
-import Progress from './pages/Progress';
+
+import './App.css';
+import Navbar from './components/Navbar'
+import Login from './pages/Login'
+import Home from './pages/Home'
+import Challenges from './pages/Challenges'
+import Leaderboard from './pages/Leaderboard'
+import Profile from './pages/Profile'
+import { Route } from 'react-router-dom';
+import { Routes } from 'react-router-dom';
 
 function App() {
-    const [user, setUser] = useState(null);
-
-    useEffect(() => {
-        const token = localStorage.getItem('token');
-        if (token) {
-            const decoded = jwtDecode(token);
-            setUser(decoded);
-        }
-    }, []);
-
-    return (
-        <Router>
-            <div className="min-h-screen flex flex-col items-center justify-center">
-                <h1 className="text-2xl font-bold">Fitness Challenge Tracker</h1>
-                <Routes>
-                    <Route path="/login" element={<Login setUser={setUser} />} />
-                    <Route path="/challenges" element={user ? <Challenges /> : <Navigate to="/login" />} />
-                    <Route path="/leaderboard" element={user ? <Leaderboard /> : <Navigate to="/login" />} />
-                    <Route path="/progress" element={user ? <Progress /> : <Navigate to="/login" />} />
-                </Routes>
-            </div>
-        </Router>
-    );
+  const isLoggedIn =  localStorage.getItem('authToken');
+  return (
+    <div className="App">
+      {isLoggedIn ? (
+        <>
+          <Navbar/> 
+          <Routes>
+            <Route path='/' element={<Home/>}></Route>
+            <Route path='/challenges' element={<Challenges/>}></Route>
+            <Route path='/leaderboard' element={<Leaderboard/>}></Route>
+            <Route path='/profile' element={<Profile/>}></Route>
+          </Routes>
+        
+        </>                           
+        ) : (
+          <Login/>
+          
+        )}
+      
+    </div>
+  );
 }
 
 export default App;
