@@ -24,7 +24,7 @@ const {
     createProgressLogs,
     updateProgressLog,
     deleteProgressLog,
-  } = require("./controllers/ProgressLogs");
+  } = require("./controllers/ProgressLog");
 
   const {
     getLeaderboards,
@@ -38,6 +38,8 @@ const {
     login
   } = require("./controllers/authorisation");
 
+  const authMiddleware = require("./middleware/authMiddleware");
+
   const router = require("express").Router();
   
   router.get("/", (req, res) => {
@@ -49,25 +51,25 @@ const {
   router.put("/api/users/:userId", updateUser);
   router.delete("/api/users/:userId", deleteUser);  
   
-  router.get("/api/challenges", getChallenges);
-  router.post("/api/challenges", createChallenge);
-  router.put("/api/challenges/:challengeId", updateChallenge);
-  router.delete("/api/challenges/:challengeId", deleteChallenge);  
+  router.get("/api/challenges",authMiddleware, getChallenges);
+  router.post("/api/challenges",authMiddleware, createChallenge);
+  router.put("/api/challenges/:challengeId",authMiddleware, updateChallenge);
+  router.delete("/api/challenges/:challengeId",authMiddleware, deleteChallenge);  
 
-  router.get("/api/challengeParticipants", getChallengeParticipants);
-  router.post("/api/challengeParticipants", createChallengeParticipant);
-  router.put("/api/challengeParticipants/:challengeParticipantId", updateChallengeParticipant);
-  router.delete("/api/challengeParticipants/:challengeParticipantId", deleteChallengeParticipant);  
+  router.get("/api/challengeParticipants",authMiddleware, getChallengeParticipants);
+  router.post("/api/challengeParticipants",authMiddleware, createChallengeParticipant);
+  router.put("/api/challengeParticipants/:challengeParticipantId",authMiddleware, updateChallengeParticipant);
+  router.delete("/api/challengeParticipants/:challengeParticipantId",authMiddleware, deleteChallengeParticipant);  
 
-  router.get("/api/progressLogs", getProgressLogs);
-  router.post("/api/progressLogs", createProgressLogs);
-  router.put("/api/progressLogs/:progressLogId", updateProgressLog);
-  router.delete("/api/progressLogs/:progressLogId", deleteProgressLog);  
+  router.get("/api/progressLogs",authMiddleware, getProgressLogs);
+  router.post("/api/progressLogs",authMiddleware, createProgressLogs);
+  router.put("/api/progressLogs/:progressLogId",authMiddleware, updateProgressLog);
+  router.delete("/api/progressLogs/:progressLogId",authMiddleware, deleteProgressLog);  
 
-  router.get("/api/leaderboard", getLeaderboards);
-  router.post("/api/leaderboard", createLeaderboard);
-  router.put("/api/leaderboard/:leaderboardId", updateLeaderboard);
-  router.delete("/api/leaderboard/:leaderboardId", deleteLeaderboard);  
+  router.get("/api/leaderboard",authMiddleware, getLeaderboards);
+  router.post("/api/leaderboard",authMiddleware, createLeaderboard);
+  router.put("/api/leaderboard/:leaderboardId",authMiddleware, updateLeaderboard);
+  router.delete("/api/leaderboard/:leaderboardId",authMiddleware, deleteLeaderboard);  
 
   router.post("/api/register", register);
   router.post("/api/login", login);

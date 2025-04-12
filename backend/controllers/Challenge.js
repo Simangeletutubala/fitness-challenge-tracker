@@ -1,26 +1,25 @@
 const Challenge = require("../models/Challenge");
-
+const authMiddleware = require("../middleware/authMiddleware");
 const getChallenges = async (req, res) => {
   const challenges = await Challenge.find({});
   res.json(challenges);
 };
 
-const createChallenge = (req, res) => {
+const createChallenge = async (req, res) => {
   const challenge = new Challenge({
     name: req.body.name,
     description: req.body.description,
     challenge_type: req.body.challenge_type,
-    start_date: req.body.date,
-    end_date: req.body.date,
-    createdBy: { type: mongoose.Schema.Types.ObjectId, ref: "User" },
+    start_date: req.body.start_date,
+    end_date: req.body.end_date,
+    createdBy: req.user.userId,
   });
-
-  challenge.save((err, challenge) => {
-    if (err) {
-      res.send(err);
-    }
-    res.json(Challenge);
-  });
+  try {
+    await challenge.save();
+    res.status(201).json(challenge);
+  } catch (err) {
+    res.status(400).json({ error: "Failed to create challenge" });
+  }  
 };
 
 const updateChallenge = (req, res) => {
