@@ -14,43 +14,46 @@ function Challenges() {
     }, []);
 
     return (
-        <div>
+        <div class="container card mt-2">
             <h2 className="text-xl font-bold">Challenges</h2>
-            <Link to="/CreateChallenge" className="title">
-                Create Challenge
-            </Link>
-            
-            <table>
-                <thead>
-                    <tr>
-                        <td>Name</td>
-                        <td>Description</td>
-                        <td>Start Date</td>
-                        <td>End Date</td>
-                        <td></td>
-                    </tr>
-                </thead>
-                <tbody>
-                {challenges.map(ch => (
-                    <tr key={ch._id}>
-                        <td>
-                            {ch.name}
-                        </td>
-                        <td>
-                            {ch.description}
-                        </td>  
-                        <td>
-                            {ch.start_date}
-                        </td>  
-                        <td>
-                            {ch.end_date}
-                        </td>  
-                        <td><Link to={"/ViewChallenge" }
-                                state={ch} >View Challenge</Link></td>   
-                    </tr>
-                ))}
-                </tbody>
-            </table>
+            <div class='card-body'>
+                <div class="float-end">
+                    <Link to="/CreateChallenge" className="title btn btn-primary">
+                        Create Challenge
+                    </Link>
+                </div>
+                <table class="table">
+                    <thead>
+                        <tr>
+                            <th>Name</th>
+                            <th>Description</th>
+                            <th>Start Date</th>
+                            <th>End Date</th>
+                            <th></th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                    {challenges.map(ch => (
+                        <tr key={ch._id}>
+                            <td>
+                                {ch.name}
+                            </td>
+                            <td>
+                                {ch.description}
+                            </td>  
+                            <td>
+                                {new Date(ch.start_date).toLocaleDateString()}
+                            </td>  
+                            <td>
+                                {new Date(ch.end_date).toLocaleDateString()}
+                            </td>  
+                            <td><Link to={"/ViewChallenge" }
+                                    state={ch} >View Challenge</Link></td>   
+                        </tr>
+                    ))}
+                    </tbody>
+                </table>            
+            </div>           
         </div>
     );
 }

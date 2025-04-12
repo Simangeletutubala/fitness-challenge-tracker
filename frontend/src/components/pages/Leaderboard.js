@@ -14,14 +14,14 @@ function Leaderboard() {
     }, []);
 
     return (
-        <div>
+        <div class="container">
             <h2 className="text-xl font-bold">Leaderboard</h2>
-            <table>
+            <table class="table">
                 <thead>
                     <tr>
-                        <td>Challenge</td>
-                        <td>User</td>
-                        <td>Points</td>
+                        <th>Challenge</th>
+                        <th>User</th>
+                        <th>Points</th>
                     </tr>
                 </thead>
                 <tbody>
@@ -35,12 +35,7 @@ function Leaderboard() {
                    
                 ))}
                 </tbody>
-            </table>
-            <ul>
-                {leaders.map((user, index) => (
-                    <li key={index}>{index + 1} {user.name} Challenge {user.challenge_name} - {user.points} points</li>
-                ))}
-            </ul>
+            </table>           
         </div>
     );
 }

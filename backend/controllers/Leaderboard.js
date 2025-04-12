@@ -15,7 +15,7 @@ const getLeaderboards = async (req, res) => {
           name: user.name,
           challenge_id: challenge._id,
           challenge_name: challenge.name,
-          points: leaderboardItem.points
+          points: leaderboardItem.score
         });
       } 
     }

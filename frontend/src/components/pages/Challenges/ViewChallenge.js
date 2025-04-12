@@ -8,13 +8,14 @@ function ViewChallenge(props) {
     const [participants, setParticipants] = useState([]);   
     const [progressLogs, setProgressLogs] = useState([]);   
     const [isInChallenge, setUserIsInChallenge] = useState(false); 
-    const [value, setValue] = useState(false); 
-    const [activity_type, setType] = useState(false); 
+    const [value, setValue] = useState(0); 
+    const [activity_type, setType] = useState(''); 
     const token =  localStorage.getItem('authToken');
     const userId = jwtDecode(token).userId;
+    const [isLoading, setLoading] = useState(true);
 
-    useEffect(() => {       
-         get(`challengeParticipants?challenge_id=${_id}`).then(res => {
+    useEffect( () => {       
+        get(`challengeParticipants?challenge_id=${_id}`).then(res => {
                 if (res?.length > 0) {
                     setParticipants(res);                   
                     let userInChallenge = res.some(u => u.user_id === userId);
@@ -22,10 +23,11 @@ function ViewChallenge(props) {
                 }
             });
 
-            get(`progresslogs?challenge_id=${_id}&user_id=${userId}`).then(res => {
+        get(`progresslogs?challenge_id=${_id}&user_id=${userId}`).then(res => {
                 if (res?.length > 0) {
                     setProgressLogs(res);        
                 }
+                setLoading(false);
             });
     }, [_id, userId]);
 
@@ -43,7 +45,9 @@ function ViewChallenge(props) {
             await post('progresslogs', {_id, userId, value, activity_type }); 
             get(`progresslogs?challenge_id=${_id}&user_id=${userId}`).then(res => {
                 if (res?.length > 0) {
-                    setProgressLogs(res);        
+                    setProgressLogs(res);      
+                    setType('');
+                    setValue(0);
                 }
             });     
             alert('Progress saved successfully');                     
@@ -58,56 +62,85 @@ function ViewChallenge(props) {
 
     return (
         <>
-        <div>
+        {(isLoading ? 
+            <div class="spinner-border text-primary spinner" role="status">
+                <span class="sr-only">Loading...</span>
+            </div> :
+            <>
+            <div class="container card mt-2 p-1">
             <h2 className="text-xl font-bold">View Challenge</h2>
             <div className="flex flex-col gap-4">
-                    <input type="text" placeholder="Name" className="p-2 border" readOnly disabled='{true}' value={name} />
-                    <input type="text" placeholder="Description" className="p-2 border" readOnly disabled='{true}' value={description} />
-                    <input type="text" placeholder="Start date" className="p-2 border" readOnly disabled='{true}' value={start_date} />
-                    <input type="text" placeholder="End Date" className="p-2 border"  readOnly disabled='{true}' value={end_date} />
-                    <button onClick={handleCancel} className="bg-blue-500 text-white p-2">Back to Challenges</button>
+                    <input type="text" placeholder="Name" className="form-control mt-2" readOnly disabled='{true}' value={name} />
+                    <input type="text" placeholder="Description" className="form-control mt-2" readOnly disabled='{true}' value={description} />
+                    <input type="text" placeholder="Start date" className="form-control mt-2" readOnly disabled='{true}' value={start_date} />
+                    <input type="text" placeholder="End Date" className="form-control mt-2"  readOnly disabled='{true}' value={end_date} />
+                    <button onClick={handleCancel} className="btn btn-secondary m-2">Back to Challenges</button>
                  { ( isInChallenge ? ''
-                  : <button onClick={handleSave} className="bg-blue-500 text-white p-2">Join Challenge</button>  )}
+                  : <button onClick={handleSave} className="btn btn-primary m-2">Join Challenge</button>  )}
             </div>
-            <ul>
-                {participants.map((user, index) => (
-                    <li key={index}>{index + 1}. {user.name} - {user.points} points</li>
-                ))}
-            </ul>
-        </div>
-        {(
-            isInChallenge ? <div>
-            <h2 className="text-xl font-bold">Progress Logs</h2>
-            <input type="text" placeholder="Type" className="p-2 border" onChange={(e) => setType(e.target.value)} />
-            <input type="number" placeholder="Duration" className="p-2 border" onChange={(e) => setValue(e.target.value)} />           
-            <button onClick={handleProgress} className="bg-blue-500 text-white p-2">Log Progress</button> 
             
-            <table>
-                <thead>
-                    <tr>
-                        <td>Activity Type</td>
-                        <td>Duration</td>
-                        <td>Start Date</td>
-                    </tr>
-                </thead>
-                <tbody>
-                {progressLogs.map(log => (
-                    <tr key={log._id}>
-                        <td>
-                            {log.activity_type}
-                        </td>
-                        <td>
-                            {log.value}
-                        </td>  
-                        <td>
-                            {log.createdAt}
-                        </td> 
-                    </tr>
-                ))}
-                </tbody>
-            </table>
-        </div>: ''
+        </div>
+        {(participants && participants.length > 0 ? 
+            <div className='container card mt-2'>
+                <h2 className="text-xl font-bold">Participants</h2>
+                <div className='card-body'>
+                    <ul className="list-group">
+                    {participants.map((user, index) => (
+                        <li className="list-group-item" key={index}>{index + 1}. {user.name} - {user.points} points</li>
+                    ))}
+                    </ul>
+                </div>
+               
+            </div> : ''
         )}
+        {(
+            isInChallenge ? 
+            <div class="container card mt-2">
+                <h2 className="text-xl font-bold">Progress Logs</h2>
+                <div class="card-body">        
+                    <div class="input-group mb-3">
+                        <select class="custom-select form-control" id="inputGroupSelect02" onChange={(e) => setType(e.target.value)}>
+                            <option selected>Choose Activity...</option>
+                            <option value="Swimming">Swimming</option>
+                            <option value="Walking">Walking</option>
+                            <option value="Running">Running</option>
+                            <option value="Cycling">Cycling</option>
+                        </select>    
+                    </div>  
+                    <input type="number" placeholder="Duration" className="form-control mt-2" onChange={(e) => setValue(e.target.value)} />           
+                    <button onClick={handleProgress} className="btn btn-primary mt-2">Log Progress</button> 
+                    
+                    <table class="table"> 
+                        <thead>
+                            <tr>
+                                <th>Activity Type</th>
+                                <th>Duration</th>
+                                <th>Log Date</th>
+                            </tr>
+                        </thead>
+                        <tbody>
+                        {progressLogs.map(log => (
+                            <tr key={log._id}>
+                                <td>
+                                    {log.activity_type}
+                                </td>
+                                <td>
+                                    {log.value}
+                                </td>  
+                                <td>
+                                    {new Date(log.createdAt).toLocaleDateString() }
+                                </td> 
+                            </tr>
+                        ))}
+                        </tbody>
+                    </table>
+                </div>
+            </div>: ''
+        )}
+            </>
+        )}
+        
+
         </>
     );
 }

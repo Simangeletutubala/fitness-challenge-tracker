@@ -1,22 +1,17 @@
-import { useState, useEffect } from 'react';
+import { useState } from 'react';
 import {post} from '../../../api';
 
 function CreateChallenge() {
-  
-    const [leaders, setLeaders] = useState([]);
+
     const [name, setName] = useState('');
     const [description, setDescription] = useState('');
     const [ challenge_type, setType] = useState('');
     const [start_date, setStartDate] = useState('');
     const [end_date, setEndDate] = useState('');
 
-    useEffect(() => {
-       
-    }, []);
-
     const handleSave = async () => {
         try {
-            const res = await post(`challenges`, { name, description, challenge_type, start_date, end_date });                        
+          await post(`challenges`, { name, description, challenge_type, start_date, end_date });                        
         } catch (err) {            
             alert('Failed to create challenge');
         }
@@ -27,22 +22,39 @@ function CreateChallenge() {
     };
 
     return (
-        <div>
-            <h2 className="text-xl font-bold">Create Challenge</h2>
-            <div className="flex flex-col gap-4">
-                    <input type="text" placeholder="Name" className="p-2 border" onChange={(e) => setName(e.target.value)} />
-                    <input type="text" placeholder="Description" className="p-2 border" onChange={(e) => setDescription(e.target.value)} />
-                    <input type="text" placeholder="Type" className="p-2 border" onChange={(e) => setType(e.target.value)} />
-                    <input type="Date" placeholder="Start date" className="p-2 border" onChange={(e) => setStartDate(e.target.value)} />
-                    <input type="Date" placeholder="End Date" className="p-2 border" onChange={(e) => setEndDate(e.target.value)} />
-                    <button onClick={handleCancel} className="bg-blue-500 text-white p-2">Cancel</button>
-                    <button onClick={handleSave} className="bg-blue-500 text-white p-2">Save</button>
+        <div className="container card mt-3 text-left">
+            
+            <div className=" card-body flex flex-col gap-4">
+            <h2 className="card-title">Create Challenge</h2>
+
+                <div className="form-group">
+                    <label>Name</label>
+                    <input type="text" placeholder="Name"  className="form-control" onChange={(e) => setName(e.target.value)} />
                 </div>
-            <ul>
-                {leaders.map((user, index) => (
-                    <li key={user._id}>{index + 1}. {user.name} - {user.points} points</li>
-                ))}
-            </ul>
+
+                <div className="form-group">
+                    <label>Description</label>
+                    <input type="text" placeholder="Description" className="form-control" onChange={(e) => setDescription(e.target.value)} />
+                </div>
+
+                <div className="form-group">
+                    <label>Type</label>
+                    <input type="text" placeholder="Type" className="form-control" onChange={(e) => setType(e.target.value)} />
+                </div>
+
+                <div className="form-group">
+                    <label>Start date</label>
+                    <input type="Date" placeholder="Start date" className="form-control" onChange={(e) => setStartDate(e.target.value)} />
+                </div>
+
+                <div className="form-group">
+                    <label>End Date</label>
+                    <input type="Date" placeholder="End Date" className="form-control" onChange={(e) => setEndDate(e.target.value)} />
+                </div>
+                <button onClick={handleCancel} className="btn btn-danger m-2">Cancel</button>
+                <button onClick={handleSave} className="btn btn-primary m-2">Save</button>
+               
+            </div>
         </div>
     );
 }
