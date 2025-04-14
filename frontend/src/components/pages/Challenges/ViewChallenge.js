@@ -8,7 +8,7 @@ function ViewChallenge(props) {
     const [participants, setParticipants] = useState([]);   
     const [progressLogs, setProgressLogs] = useState([]);   
     const [isInChallenge, setUserIsInChallenge] = useState(false); 
-    const [value, setValue] = useState(0); 
+    const [value, setValue] = useState(''); 
     const [activity_type, setType] = useState(''); 
     const token =  localStorage.getItem('authToken');
     const userId = jwtDecode(token).userId;
@@ -47,7 +47,7 @@ function ViewChallenge(props) {
                 if (res?.length > 0) {
                     setProgressLogs(res);      
                     setType('');
-                    setValue(0);
+                    setValue('');
                 }
             });     
             alert('Progress saved successfully');                     
@@ -99,7 +99,7 @@ function ViewChallenge(props) {
                 <h2 className="text-xl font-bold">Progress Logs</h2>
                 <div class="card-body">        
                     <div class="input-group mb-3">
-                        <select class="custom-select form-control" id="inputGroupSelect02" onChange={(e) => setType(e.target.value)}>
+                        <select class="custom-select form-control" id="inputGroupSelect02" value={activity_type} onChange={(e) => setType(e.target.value)}>
                             <option selected>Choose Activity...</option>
                             <option value="Swimming">Swimming</option>
                             <option value="Walking">Walking</option>
@@ -107,8 +107,8 @@ function ViewChallenge(props) {
                             <option value="Cycling">Cycling</option>
                         </select>    
                     </div>  
-                    <input type="number" placeholder="Duration" className="form-control mt-2" onChange={(e) => setValue(e.target.value)} />           
-                    <button onClick={handleProgress} className="btn btn-primary mt-2">Log Progress</button> 
+                    <input type="number" placeholder="Duration" value={value} className="form-control mt-2" onChange={(e) => setValue(e.target.value)} />           
+                    <button onClick={handleProgress}  className="btn btn-primary mt-2">Log Progress</button> 
                     
                     <table class="table"> 
                         <thead>

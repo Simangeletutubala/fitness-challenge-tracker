@@ -6,8 +6,7 @@ function Leaderboard() {
 
     useEffect(() => {
         get(`leaderboard`).then(res => {
-            if (res?.length > 0) {
-                console.log(res);
+            if (res?.length > 0) {              
                 setLeaders(res)
             }
         });

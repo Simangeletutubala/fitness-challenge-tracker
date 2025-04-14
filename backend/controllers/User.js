@@ -1,7 +1,7 @@
 const User = require("../models/User");
 
-const getUsers = async (req, res) => {
-  const users = await User.find({});
+const getUser = async (req, res) => {
+  const users = (await User.find({_id : req.user.userId }))[0];
   res.json(users);
 };
 
@@ -48,7 +48,7 @@ const deleteUser = (req, res) => {
 };
 
 module.exports = {
-  getUsers,
+  getUser,
   createUser,
   updateUser,
   deleteUser,

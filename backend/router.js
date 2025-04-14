@@ -1,5 +1,5 @@
 const {
-    getUsers,
+    getUser,
     createUser,
     updateUser,
     deleteUser,
@@ -46,7 +46,7 @@ const {
     res.send("Let's build a CRUD API!");
   });
   
-  router.get("/api/users", getUsers);
+  router.get("/api/getUserProfile",authMiddleware, getUser);
   router.post("/api/users", createUser);
   router.put("/api/users/:userId", updateUser);
   router.delete("/api/users/:userId", deleteUser);  
