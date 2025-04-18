@@ -1,6 +1,10 @@
 import { useState, useEffect } from 'react';
 import {put, get} from '../../api';
 import "./Profile.css";
+import { jwtDecode} from "jwt-decode";
+import axios from 'axios';
+
+const API_URL = 'http://localhost:5000/api';
 function Profile() {
 
     const [name, setName] = useState('');
@@ -12,11 +16,10 @@ function Profile() {
 
     useEffect( () => {       
             get(`getUserProfile`).then(res => {
-                    if (res?.length > 0) {
-                        setName(res.name);  
-                        setEmail(res.name); 
-                        setPassword(res.name); 
-
+               
+                    if (res) {
+                        setName(res?.name);  
+                        setEmail(res?.email);                        
                         var picture = res.profile_picture;
 
                         if(picture){
@@ -32,9 +35,18 @@ function Profile() {
 
     const handleSave = async () => {
         try {
-          await put(`users`, { name, email, password, imgString });                        
+            const token =  localStorage.getItem('authToken');
+            const userId = jwtDecode(token).userId;          
+            await put(`users`,userId, { name, email, password}).then(res =>{ if(imgString)  {
+                const formData = new FormData();
+                formData.append('file' , imgString);
+                axios.post(`http://localhost:5000/upload/${userId}`, formData, {headers:{
+                    'Content-Type': 'multipart/form-data',
+                }}).then(res => {}).catch(er => console.log(er));
+            }  });  
+                              
         } catch (err) {            
-            alert('Failed to create challenge');
+            alert('Could not save user profile');
         }
     };
 

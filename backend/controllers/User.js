@@ -21,24 +21,25 @@ const createUser = (req, res) => {
   });
 };
 
-const updateUser = (req, res) => {
-  User.findOneAndUpdate(
-    { _id: req.params.userID },
-    {
-      $set: {
-        name: req.body.name,
-        email: req.body.email,
-        password: req.body.password,
-        profile_picture: req.body.profile_picture,
+const updateUser = async (req, res) => {
+  //password: req.body.password,
+  try {
+    console.log(req.body.imgString);
+    await  User.findOneAndUpdate(
+      { _id: req.params.userId },
+      {
+        $set: {
+          name: req.body.name,
+          email: req.body.email,        
+          profile_picture: req.body.imgString,
+        },
       },
-    },
-    { new: true },
-    (err, User) => {
-      if (err) {
-        res.send(err);
-      } else res.json(User);
-    }
-  );
+      { new: true }
+    );
+  } catch (error) {
+    console.log(error);
+  }
+
 };
 
 const deleteUser = (req, res) => {

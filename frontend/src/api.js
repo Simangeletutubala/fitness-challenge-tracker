@@ -39,12 +39,12 @@ export const get = async (url) => {
     }
 };
 
-export const put = async (url, payload) => {
+export const put = async (url, id, payload) => {
     try {
         const config = {
             headers: { Authorization: `Bearer ${localStorage.getItem('authToken')}` }
         };
-        const response = await axios.post(`${API_URL}/${url}`, payload, config);
+        const response = await axios.put(`${API_URL}/${url}/${id}`, payload, config);
         return response.data;
     } catch (error) {
         console.error('Error creating user:', error);
